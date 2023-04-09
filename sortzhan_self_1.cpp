@@ -1,69 +1,64 @@
-#include<iostream>
+#include <iostream>
 using namespace std;
-//完整顺序：顺序栈实现进制转换
-//查找完整要求
 typedef struct
 {
     int *base;
     int *top;
     int stacksize;
-}SqStack;
+} SqStack;
 
 // 初始化
 void InitStack(SqStack &S)
 {
     S.base = new int[100];
+    if (!S.base)
+        exit(-2);
     S.top = S.base;
     S.stacksize = 100;
 }
 
-//判断栈空
-void StackEmpty(SqStack S)
-{
-    if(S.top==S.base)
-        cout << "栈空" << endl;
-}
 // 入栈
 void Push(SqStack &S, int e)
 {
-    //如果超过maxsize,分配新空间
-    if(S.top-S.base>=S.stacksize)
+    if (S.top - S.base >= S.stacksize)
     {
-        int *newbase = new int[S.stacksize+100];
+        int *newbase = new int[S.stacksize + 100];
         int *p = S.base;
         int *q = newbase;
-        while(p!=S.top)
+        while (p != S.top)
         {
             *q++ = *p++;
         }
-        delete []S.base;
+        delete S.base;
         S.base = newbase;
         S.top = q;
         S.stacksize += 100;
-    } //思考 
+    }
     *S.top++ = e;
 }
 
 // 出栈
 void Pop(SqStack &S, int &e)
 {
-    StackEmpty(S);
+    if (S.top == S.base)
+        exit(-1);
     e = *--S.top;
 }
 
 // 取栈顶元素
-void GetTop(SqStack S, int &e)
+int GetTop(SqStack S)
 {
-    StackEmpty(S);
-    e = *(S.top-1);
+    if (S.top == S.base)
+        exit(-1);
+    return *(S.top - 1);
 }
 
-// 销毁栈(有问题)
+// 销毁栈
 void DestroyStack(SqStack &S)
 {
-    delete []S.base;
-    //如果不置空，会出现野指针
-    S.base = NULL;
+    delete S.base;
+    S.stacksize = 0;
+    S.base = S.top = NULL;
 }
 
 // 清空栈
@@ -76,7 +71,7 @@ void ClearStack(SqStack &S)
 void TraverseStack(SqStack S)
 {
     int *p = S.base;
-    while(p!=S.top)
+    while (p != S.top)
     {
         cout << *p << " ";
         p++;
@@ -86,6 +81,30 @@ void TraverseStack(SqStack S)
 
 int main()
 {
+    // 十进制转为其他进制
+    SqStack S;
+    InitStack(S);
+    int m, n, i;
+    cout << "请输入一个十进制数:" << endl;
+    cin >> n;
+    cout << "请输入要转换的进制:" << endl;
+    cin >> m;
+    while (n)
+    {
+        Push(S, n % m);
+        n /= m;
+    }
+    cout << "转换后的数为:" << endl;
+    while (S.top != S.base)
+    {
+        Pop(S, i);
+        cout << i;
+    }
+    {
+        Pop(S, i);
+        cout << i;
+    }
+    cout << endl;
 
+    return 0;
 }
-
