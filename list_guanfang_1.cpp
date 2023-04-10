@@ -5,9 +5,9 @@ using namespace std;
 #define OK 1
 #define ERROR 0
 #define OVERFLOW -2
-#define MAXSIZE 100
+#define MAXSIZE 3
 #define ElementType int
-typedef int Status;
+typedef int Status;//Status是函数返回值的类型，其值是函数结果状态代码
 typedef struct 
 {
     ElementType *elem;
@@ -18,6 +18,8 @@ typedef struct
 Status InitList(Sqlist &L)
 {
     L.elem = (ElementType *)malloc(MAXSIZE * sizeof(ElementType));
+    // L.elem = new ElementType[MAXSIZE]; //指针变量 = new 类型[数组长度]
+    //释放内存：delete 指针变量;
     if (!L.elem)
         exit(OVERFLOW);
     L.length = 0;
@@ -26,23 +28,28 @@ Status InitList(Sqlist &L)
 }
 
 /* 查找 */
-// #define ERROR -1
+int LocateElem( Sqlist L, ElementType X )
+{ /* 在顺序线性表L中查找值为X的元素，如果找到，返回其在表中序号表示成功；否则返回0表示失败 */
+    int i;
+    for (i = 0; i < L.length; i++)
+        if (L.elem[i] == X)
+            return i+1;
+    return 0;
+}//O(n)
 
-// Position Find( List L, ElementType X )
-// {
-//     Position i = 0;
+/*取值*/ 
+Status GetElem( Sqlist L, int i, ElementType &e )
+{ /* 在顺序线性表L中查找序号为i的元素，如果找到，返回其值；否则返回0表示失败 */
+    if (i < 1 || i > L.length)
+        return ERROR;
+    e = L.elem[i-1];
+    return OK;
+}//O(1)  //取到了怎么显示：cout << e << endl;
 
-//     while( i <= L->Last && L->Data[i]!= X )
-//         i++;
-//     if ( i > L->Last )  return ERROR; /* 如果没找到，返回错误信息 */
-//     else  return i;  /* 找到后返回的是存储位置 */
-// }
 
 /* 插入 */
-/*注意:在插入位置参数P上与课程视频有所不同，课程视频中i是序列位序（从1开始），这里P是存储下标位置（从0开始），两者差1*/
-/*bool*/
 Status Insert( Sqlist &L, ElementType X, int i )
-{ /* 在L的指定位置P前插入新元素X */
+{ /* 在L的指定位置i前插入新元素X */
     int j;
     if (L.length == MAXSIZE) /* 顺序线性表已经满 */
         return ERROR;
@@ -54,34 +61,41 @@ Status Insert( Sqlist &L, ElementType X, int i )
             L.elem[j+1] = L.elem[j]; /* 将要插入位置后数据元素向后移动一位 */
     }
     L.elem[i-1] = X; /* 将新元素插入 */
-    L.length++;
+    ++L.length; /* 表长增1 */ //用L.length++有影响吗？——有，
     return OK;
 }
 
 /* 删除 */
-/*注意:在删除位置参数P上与课程视频有所不同，课程视频中i是序列位序（从1开始），这里P是存储下标位置（从0开始），两者差1*/
-// void Delete( List L, Position P )
-// { /* 从L中删除指定位置P的元素 */
-//     Position i;
+Status ListDelete (Sqlist &L, int i)
+{
+    int j;
+    if (i<1 || i>L.length)
+        return ERROR;
+    for (j=i;j<L.length;j++)//如果刚好是表尾，那么就不用移动了，直接减少长度就行
+        L.elem[j-1]=L.elem[j];
+    L.length--;//--L.length;
+    return OK;
+}//O(n)
 
-//     if( P<0 || P>L->Last ) { /* 检查空表及删除位置的合法性 */
-//         printf("位置%d不存在元素", P ); 
-//         return; 
-//     }
-//     for( i=P+1; i<=L->Last; i++ )
-//         L->Data[i-1] = L->Data[i]; /* 将位置P+1及以后的元素顺序向前移动 */
-//     L->Last--; /* Last仍指向最后元素 */
-//     return;   
-// }
+/* 遍历 */
+Status ListTraverse( Sqlist L )
+{ /* 依次输出顺序线性表L中的每个元素 */
+    int i;
+    for (i = 0; i < L.length; i++)
+        cout << L.elem[i] << " ";
+    cout << endl;//换行
+    return OK;
+}
+
 
 int main()
 {
     Sqlist L;
     InitList(L);
-    Insert(L, 'a', 0);
-    Insert(L, 'b', 1);
-    int X,i;
-    scanf("%c %d",&X,&i);
-    Insert(L, X, i);
+    Insert(L, 1, 1);
+    Insert(L, 2, 2);
+    Insert(L, 3, 3);
+    ListDelete(L, 3);
+    ListTraverse(L);
 
 }
