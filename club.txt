@@ -1,0 +1,17 @@
+club_002:
+    name: club1
+    description: This is club1
+    slogan:English
+    aim:teach everyone
+    rule:speak
+    boss:Bend
+    members:
+        name: member2
+        id: 1002
+        age: 22
+	  point:30
+	  level:3
+    activities:
+        name: activity2
+        description: This is activity2
+        date: 2022/02/02
