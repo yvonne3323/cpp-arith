@@ -204,7 +204,7 @@ int main()
                 cout << "输入不合法" << endl;
             break;
         }
-        /* 删除 */
+        /* 查找 */
         case 2:
         {
             int e;
