@@ -93,7 +93,17 @@ void Destroy(BiTree &T)//销毁二叉树
     delete T;
     T = NULL;
 }
+//销毁
+void delet_tree(BiTree &T)
+{
+    if (T == NULL)
+        return;
+    delet_tree(T->lchild);
+    delet_tree(T->rchild);
+    delete T;
+    T = NULL;
 
+}
 int main()
 {
     BiTree T;
@@ -110,6 +120,7 @@ int main()
     cout << "树的深度：" << Depth(T) << endl;
     cout << "叶子结点数：" << LeafCount(T) << endl;
     cout << "结点总数：" << NodeCount(T) << endl;
+    printf("%d",LeafCount(T));
     Destroy(T);
     return 0;
 }
