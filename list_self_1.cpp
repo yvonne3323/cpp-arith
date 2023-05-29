@@ -141,6 +141,19 @@ void Clear(Sqlist &L)
     cout << "清空成功" << endl;
 }
 
+/* 动态增长内存 */
+void IncreaseSize(Sqlist &L, int len)
+{
+    int *p = L.elem;
+    L.elem = (int *)malloc((L.length+len)*sizeof(int));
+    if (!L.elem)
+        exit(-2);
+    for (int i = 0; i < L.length; i++)
+        L.elem[i] = p[i];
+    L.length += len;
+    free(p);
+}
+
 int main()
 {
     int input = 0;
