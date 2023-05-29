@@ -1,0 +1,46 @@
+name:数学社
+description:love
+slogan:study
+aim:high level
+rule:Bend
+boss:math
+members:
+sponsor:
+name:Aiqiyi
+name:TengXun
+name:Jiangxi University of Finance and Economics
+end
+name:英语社
+description:111 1
+slogan:222 2
+aim:333 3
+rule:444 4
+boss:555 5
+members:
+member:
+name:member2
+age:19
+gender:Female
+point:20
+sponsor:
+name:TengXun
+name:Jiangxi University of Finance and Economics
+end
+name:金融社
+description:aaa a
+slogan:bbb b
+aim:ccc c
+rule:ddd d
+boss:eee e
+members:
+member:
+name:memberw
+age:18
+gender:Male
+point:10
+sponsor:
+name:Qudaodeng
+name:Aiqiyi
+name:TengXun
+name:Jiangxi University of Finance and Economics
+end

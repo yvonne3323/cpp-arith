@@ -1,173 +1,194 @@
-#include<iostream>
-using namespace std;
-#include<fstream>
-#include<string>
-#include<sstream>
-#include<vector>
 
-struct Member
-{
-    string name;
-    string id;
+/*
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+struct member {
+    char name[20];
+    int id;
     int age;
     int point;
     int level;
-    Member* nextMember;
+    struct member *next;
 };
 
-struct Activity
-{
-    string name;
-    string organizer;
-    string date;
-    string address;
-    string description;
-    Activity* nextActivity;
+struct activity {
+    char name[20];
+    char description[100];
+    char date[20];
+    struct activity *next;
 };
 
-struct Club
-{
-    string name;
-    string description;
-    string slogan;
-    string aim;
-    string rule;
-    string boss;
-    Member* memberList;
-    Activity* activityList;
-    Club* nextClub;
+struct club {
+    char name[20];
+    char description[100];
+    char slogan[20];
+    char aim[20];
+    char rule[20];
+    char boss[20];
+    struct member *members;
+    struct activity *activities;
+    struct club *next;
 };
 
-
-Club* readClubFile(string filePath)
-{
-    ifstream fi(filePath);
-    if (!fi)
-    {
-        cerr << "Failed to open file: " << filePath << endl;
-        return nullptr;
+// 读取文件中的一行数据
+char *read_line(FILE *fp) {
+    char *line = NULL;
+    size_t len = 0;
+    if (getline(&line, &len, fp) == -1) {
+        free(line);
+        return NULL;
     }
-
-    Club* head = nullptr;
-    Club* tail = nullptr;
-
-    string line;
-    Club* cur = nullptr;
-    while (getline(fi, line))
-    {
-        // 新的社团信息开始
-        if (line.find("club_") != std::string::npos)
-        {
-            cur = new Club();
-            cur->memberList = nullptr;
-            cur->activityList = nullptr;
-
-            // 将新创建的结构体插入到链表末尾
-            if (tail == nullptr)
-            {
-                head = cur;
-                tail = cur;
-            }
-            else
-            {
-                tail->nextClub = cur;
-                tail = cur;
-            }
-        }
-
-        if (cur)
-        {
-            if (line.find("name: ") != std::string::npos)
-            {
-                cur->name = line.substr(6);
-            }
-            else if (line.find("description: ") != std::string::npos)
-            {
-                cur->description = line.substr(13);
-            }
-            else if (line.find("slogan: ") != std::string::npos)
-            {
-                cur->slogan = line.substr(8);
-            }
-            else if (line.find("aim: ") != std::string::npos)
-            {
-                cur->aim = line.substr(5);
-            }
-            else if (line.find("rule: ") != std::string::npos)
-            {
-                cur->rule = line.substr(6);
-            }
-            else if (line.find("boss: ") != std::string::npos)
-            {
-                cur->boss = line.substr(6);
-            }
-            else if (line.find("members:") != std::string::npos)
-            {
-                Member* member = new Member();
-                member->nextMember = cur->memberList;
-                cur->memberList = member;
-            }
-            else if (line.find("name: ") != std::string::npos)
-            {
-                cur->memberList->name = line.substr(6);
-            }
-            else if (line.find("id: ") != std::string::npos)
-            {
-                cur->memberList->id = line.substr(4);
-            }
-            else if (line.find("age: ") != std::string::npos)
-            {
-                cur->memberList->age = stoi(line.substr(5));
-            }
-            else if (line.find("point: ") != std::string::npos)
-            {
-                cur->memberList->point = stoi(line.substr(7));
-            }
-            else if (line.find("level: ") != std::string::npos)
-            {
-                cur->memberList->level = stoi(line.substr(7));
-            }
-            else if (line.find("activities:") != std::string::npos)
-            {
-                Activity* activity = new Activity();
-                activity->nextActivity = cur->activityList;
-                cur->activityList = activity;
-            }
-            else if (line.find("name: ") != std::string::npos)
-            {
-                cur->activityList->name = line.substr(6);
-            }
-            else if (line.find("description: ") != std::string::npos)
-            {
-                cur->activityList->description = line.substr(13);
-            }
-            else if (line.find("date: ") != std::string::npos)
-            {
-                cur->activityList->date = line.substr(6);
-            }
-        }
+    // 去除换行符
+    if (line[strlen(line)-1] == '\n') {
+        line[strlen(line)-1] = '\0';
     }
-
-    fi.close();
-    return head;
+    return line;
 }
 
-int main() {
-    Club* head = readClubFile("club.txt");
+// 读取文件并创建链表
+void read_file(char *filename, struct club **head)
+{
+    FILE *fp = fopen(filename, "r");//打开文件 r 代表只读
+    if (fp == NULL) 
+    {
+        printf("Error: Cannot open file %s\n", filename);
+        return;
+    }
 
-    // 输出第一个社团的成员信息
-    if (head != nullptr) {
-        Member* curMember = head->memberList;
-        while (curMember != nullptr) {
-            std::cout << "Name: " << curMember->name << std::endl;
-            std::cout << "ID: " << curMember->id << std::endl;
-            std::cout << "Age: " << curMember->age << std::endl;
-            std::cout << "Point: " << curMember->point << std::endl;
-            std::cout << "Level: " << curMember->level << std::endl;
-            std::cout << std::endl;
-            curMember = curMember->nextMember;
+    char *line;
+    int is_member = 0, is_activity = 0;
+    struct club *curr_club = NULL;
+    struct member *curr_member = NULL;
+    struct activity *curr_activity = NULL;
+
+    while ((line = read_line(fp)) != NULL) {
+        if (strstr(line, "club_") != NULL) {
+            // 新社团开始，创建新节点
+            struct club *new_club = (struct club *)malloc(sizeof(struct club));
+            strcpy(new_club->name, line);
+            new_club->members = NULL;
+            new_club->activities = NULL;
+            new_club->next = NULL;
+
+            // 插入链表
+            if (*head == NULL) {
+                *head = new_club;
+            } else {
+                curr_club->next = new_club;
+            }
+            curr_club = new_club;
+        } else if (strstr(line, "name:") != NULL) {
+            // 社团名称
+            strcpy(curr_club->name, line+strlen("name: "));
+        } else if (strstr(line, "description:") != NULL) {
+            // 社团描述
+            strcpy(curr_club->description, line+strlen("description: "));
+        } else if (strstr(line, "slogan:") != NULL) {
+            // 社团口号
+            strcpy(curr_club->slogan, line+strlen("slogan: "));
+        } else if (strstr(line, "aim:") != NULL) {
+            // 社团宗旨
+            strcpy(curr_club->aim, line+strlen("aim: "));
+        } else if (strstr(line, "rule:") != NULL) {
+            // 社团规则
+            strcpy(curr_club->rule, line+strlen("rule: "));
+        } else if (strstr(line, "boss:") != NULL) {
+            // 社团负责人
+            strcpy(curr_club->boss, line+strlen("boss: "));
+        } else if (strstr(line, "members:") != NULL) {
+            is_member = 1;
+        } else if (strstr(line, "activities:") != NULL) {
+            is_activity = 1;
+        } else if (strstr(line, "name:") != NULL && is_member) {
+            // 成员姓名
+            struct member *new_member = (struct member *)malloc(sizeof(struct member));
+            strcpy(new_member->name, line+strlen("name: "));
+            new_member->next = NULL;
+            if (curr_club->members == NULL) {
+                curr_club->members = new_member;
+            } else {
+                curr_member->next = new_member;
+            }
+            curr_member = new_member;
+        } else if (strstr(line, "id:") != NULL && is_member) {
+            // 成员学号
+            curr_member->id = atoi(line+strlen("id: "));
+        } else if (strstr(line, "age:") != NULL && is_member) {
+            // 成员年龄
+            curr_member->age = atoi(line+strlen("age: "));
+        } else if (strstr(line, "point:") != NULL && is_member) {
+            // 成员积分
+            curr_member->point = atoi(line+strlen("point: "));
+        } else if (strstr(line, "level:") != NULL && is_member) {
+            // 成员等级
+            curr_member->level = atoi(line+strlen("level: "));
+        } else if (strstr(line, "name:") != NULL && is_activity) {
+            // 活动名称
+            struct activity *new_activity = (struct activity *)malloc(sizeof(struct activity));
+            strcpy(new_activity->name, line+strlen("name: "));
+            new_activity->next = NULL;
+            if (curr_club->activities == NULL) {
+                curr_club->activities = new_activity;
+            } else {
+                curr_activity->next = new_activity;
+            }
+            curr_activity = new_activity;
+        } else if (strstr(line, "description:") != NULL && is_activity) {
+            // 活动描述
+            strcpy(curr_activity->description, line+strlen("description: "));
+        } else if (strstr(line, "date:") != NULL && is_activity) {
+            // 活动日期
+            strcpy(curr_activity->date, line+strlen("date: "));
+        } else {
+            // 不合法的格式，忽略
         }
+    }
+
+    fclose(fp);
+}
+
+// 主函数
+int main() {
+    struct club *head = NULL;
+    read_file("clubs.txt", &head);
+
+    // 遍历链表输出数据
+    struct club *curr_club = head;
+    while (curr_club != NULL) {
+        printf("Club name: %s\n", curr_club->name);
+        printf("Description: %s\n", curr_club->description);
+        printf("Slogan: %s\n", curr_club->slogan);
+        printf("Aim: %s\n", curr_club->aim);
+        printf("Rule: %s\n", curr_club->rule);
+        printf("Boss: %s\n", curr_club->boss);
+
+        // 遍历成员链表
+        struct member *curr_member = curr_club->members;
+        while (curr_member != NULL) {
+            printf("Member name: %s\n", curr_member->name);
+            printf("Member id: %d\n", curr_member->id);
+            printf("Member age: %d\n", curr_member->age);
+            printf("Member point: %d\n", curr_member->point);
+            printf("Member level: %d\n", curr_member->level);
+            curr_member = curr_member->next;
+        }
+
+        // 遍历活动链表
+        struct activity *curr_activity = curr_club->activities;
+        while (curr_activity != NULL) {
+            printf("Activity name: %s\n", curr_activity->name);
+            printf("Description: %s\n", curr_activity->description);
+            printf("Date: %s\n", curr_activity->date);
+            curr_activity = curr_activity->next;
+        }
+
+        curr_club = curr_club->next;
     }
 
     return 0;
 }
+
+*/

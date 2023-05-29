@@ -1,17 +1,31 @@
-club_002:
-    name: club1
-    description: This is club1
-    slogan:English
-    aim:teach everyone
-    rule:speak
+name:club1
+    slogan:love
+    purpose:study
+    charter:high level
     boss:Bend
-    members:
-        name: member2
-        id: 1002
-        age: 22
-	  point:30
-	  level:3
-    activities:
-        name: activity2
-        description: This is activity2
-        date: 2022/02/02
+    nature:math
+    member:
+        name:member1
+        age:18
+        gender:Male
+        point:10
+
+        name:member2
+        age:18
+        gender:Female
+        point:20
+
+        name:member3
+        age:18
+        gender:Male
+        point:40
+
+        name:member4
+        age:18
+        gender:Unknown
+        point:30
+    sponsor：
+        Jiangxi University of Finance and Economics
+        TengXun
+        Aiqiyi
+        
