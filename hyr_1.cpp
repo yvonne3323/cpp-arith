@@ -9,6 +9,7 @@ typedef struct {
     int vexnum,arcnum;
 }Graph;
 bool visited[Maxlnt];
+
 int LocateVex(Graph G, VerTexType v)
 {
     int i;
@@ -19,6 +20,7 @@ int LocateVex(Graph G, VerTexType v)
         return -1;
     }
 }
+
 int FirstAdjvex(Graph G,int v)
 {
     int i;
@@ -43,11 +45,11 @@ int NextAdjvex(Graph G,int v,int w)
 
 void CreateUDN(Graph *G)
 {  int i,j,k;
-    printf("ÇëÊäÈëµãµÄ¸öÊıºÍ±ßµÄ¸öÊı");
+    printf("è¯·è¾“å…¥ç‚¹çš„ä¸ªæ•°å’Œè¾¹çš„ä¸ªæ•°");
     scanf("%d %d",&G->vexnum,&G->arcnum);
     printf("\n");
     getchar();
-    printf("ÇëÊäÈëµãµÄÃû³Æ");
+    printf("è¯·è¾“å…¥ç‚¹çš„åç§°");
 
     for( i=0;i<G->vexnum;i++)
         scanf("%c",&G->vexs[i]);
@@ -60,11 +62,12 @@ void CreateUDN(Graph *G)
             G->arcs[i][j]=0;
         }
     }
-    printf("ÊäÈë±ßÒÀ¸½µÄ¶¥µã");
+
+    printf("è¾“å…¥è¾¹ä¾é™„çš„é¡¶ç‚¹");
     for(k=0;k<G->arcnum;k++)
     {
         VerTexType v1,v2;
-        printf("ÇëÊäÈëµÚ%dÌõ±ßÒÀ¸½µÄ¶¥µã",(k+1));
+        printf("è¯·è¾“å…¥ç¬¬%dæ¡è¾¹ä¾é™„çš„é¡¶ç‚¹",(k+1));
         scanf("%c %c",&v1,&v2);
         i= LocateVex(*G,v1);
         j= LocateVex(*G,v2);
@@ -88,8 +91,8 @@ int main()
 {
     Graph  G;
     CreateUDN(&G);
-    printf("ÎŞÏòÍ¼G´´½¨Íê³É£¡\n\n");
-    printf("ÇëÊäÈë±éÀúÎŞÏòÍ¼GµÄÆğÊ¼µã£º");
+    printf("æ— å‘å›¾Gåˆ›å»ºå®Œæˆï¼\n\n");
+    printf("è¯·è¾“å…¥éå†æ— å‘å›¾Gçš„èµ·å§‹ç‚¹ï¼š");
     VerTexType c;
     scanf("%c",&c);
     int i;
@@ -100,19 +103,17 @@ int main()
     }
     printf("\n");
     while (i >= G.vexnum) {
-        printf("¸Ãµã²»´æÔÚ£¬ÇëÖØĞÂÊäÈë£¡\n");
-        printf("ÇëÊäÈë±éÀúÁ¬Í¨Í¼µÄÆğÊ¼µã£º");
+        printf("è¯¥ç‚¹ä¸å­˜åœ¨ï¼Œè¯·é‡æ–°è¾“å…¥ï¼\n");
+        printf("è¯·è¾“å…¥éå†è¿é€šå›¾çš„èµ·å§‹ç‚¹ï¼š");
         scanf(" %c", &c);
         for (i = 0; i < G.vexnum; ++i) {
             if (c == G.vexs[i])
                 break;
         }
     }
-    printf("Éî¶ÈÓÅÏÈËÑË÷±éÀúÎŞÏòÍ¼G½á¹û£º\n");
+    printf("æ·±åº¦ä¼˜å…ˆæœç´¢éå†æ— å‘å›¾Gç»“æœï¼š\n");
     DFS(G,i);
     printf("\n");
     return 0;
 
 }
-
-
