@@ -233,7 +233,7 @@ int main() {
         c = c->next;
     }
     
-    saveClubsToFile("clubs_new.txt", clubs);
+    saveClubsToFile("clubs_new2.txt", clubs);
     
     return 0;
 }

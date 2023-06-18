@@ -2,8 +2,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <stdio.h>
-#include <stdlib.h>
 using namespace std;
 
 enum Gender {//枚举 性别
@@ -19,7 +17,7 @@ typedef struct member
     enum Gender gender;//性别
     int point;//积分
     int level;//等级
-	struct member *next;//
+    struct member *next;//
 } member, *memberlist;
 
 //赞助商
@@ -27,6 +25,7 @@ typedef struct sponsor {
     string name;//姓名
     struct sponsor *next;
 } sponsor, *sponsorlist;
+
 //社团
 typedef struct club {
     string name;//名称

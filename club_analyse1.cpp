@@ -1,8 +1,5 @@
 #include"club_analyse.h"
 
-#include"4.cpp"
-#include"3.cpp"
-
 //将一行数据转换成club结构体
 club* lineToClub(string line, ifstream& infile)
 {
@@ -144,26 +141,34 @@ void saveClubsToFile(string filename, clublist clubs) {
         outfile << "description:" << c->description << endl;
         outfile << "member:" << endl;
         memberlist ml = c->members;
-        while (ml != NULL) {
-            outfile << "name:" << ml->name << endl;
-            outfile << "age:" << ml->age << endl;
-            outfile << "gender:";
-            if (ml->gender == Male) {
-                outfile << "Male" << endl;
-            } else if (ml->gender == Female) {
-                outfile << "Female" << endl;
-            } else {
-                outfile << "Unknown" << endl;
+        if (ml == NULL) { // 判断链表是否为空
+            outfile << "none" << endl;
+        } else {
+            while (ml != NULL) {
+                outfile << "name:" << ml->name << endl;
+                outfile << "age:" << ml->age << endl;
+                outfile << "gender:";
+                if (ml->gender == Male) {
+                    outfile << "Male" << endl;
+                } else if (ml->gender == Female) {
+                    outfile << "Female" << endl;
+                } else {
+                    outfile << "Unknown" << endl;
+                }
+                outfile << "point:" << ml->point << endl;
+                outfile << "level:" << ml->level << endl;
+                ml = ml->next;
             }
-            outfile << "point:" << ml->point << endl;
-            outfile << "level:" << ml->level << endl;
-            ml = ml->next;
         }
         outfile << "sponsor:" << endl;
         sponsorlist sl = c->sponsors;
-        while (sl != NULL) {
-            outfile << "name:" << sl->name << endl;
-            sl = sl->next;
+        if (sl == NULL) { // 判断链表是否为空
+            outfile << "none" << endl;
+        } else {
+            while (sl != NULL) {
+                outfile << "name:" << sl->name << endl;
+                sl = sl->next;
+            }
         }
         outfile << "end" << endl;
         c = c->next;
@@ -172,55 +177,19 @@ void saveClubsToFile(string filename, clublist clubs) {
 }
 
 
-void printClubInfo(clublist c) {
-    cout << "Club Name: " << c->name << endl;
-    cout << "Description: " << c->description << endl;
-    cout << "Slogan: " << c->slogan << endl;
-    cout << "Aim: " << c->aim << endl;
-    cout << "Rule: " << c->rule << endl;
-    cout << "Boss: " << c->boss << endl;
-    cout << "Members: " << endl;
-    memberlist m = c->members;
-    while (m != NULL) {
-        cout << "Name: " << m->name << ", Age: " << m->age << ", Gender: " << (m->gender == Male ? "Male" : "Female") << ", Point: " << m->point << ", Level: " << m->level << endl;
-        m = m->next;
-    }
-    cout << "Sponsors: " << endl;
-    sponsorlist s = c->sponsors;
-    while (s != NULL) {
-        cout << "Name: " << s->name << endl;
-        s = s->next;
-    }
-}
-
 int main()
 {
     clublist clubs = readClubsFromFile("clubs_2.txt");
-    int choice;
-    int bool1=1;
-    while (bool1==1) {
-        cout << "请选择操作：1.社团操作 2.成员操作 3.赞助商操作 4.删除 5.退出" << endl;
-        cin >> choice;
-        switch (choice) {
-            case 1:
-                club_modify(clubs);
-                break;
-            case 2:
-                members_modify(clubs);
-                break;
-            case 3:
-                sponser_modify(clubs);
-                break;
-            case 4:
-                break;
-            case 5:
-                bool1=0;
-                break;
-            default:
-                cout << "输入错误，请重新输入！" << endl;
+    //改变clubs的内容
+    clublist c = clubs;
+    while (c != NULL) {
+        memberlist ml = c->members;
+        while (ml != NULL) {
+            ml->point += 10;
+            ml = ml->next;
         }
+        c = c->next;
     }
-
-    saveClubsToFile("clubs_new1.txt", clubs);
+    saveClubsToFile("clubs_new.txt", clubs);
     return 0;
 }
